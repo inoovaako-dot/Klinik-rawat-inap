@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Transaksi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        .info-box {
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .btn-submit {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-submit:hover {
+            background-color: #218838;
+        }
+        .btn-back {
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        .btn-back:hover {
+            background-color: #5a6268;
+        }
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+        .form-divider {
+            border-top: 1px solid #dee2e6;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="glass-card">
+    <h2><i class="bi bi-pencil-square"></i> Edit Transaksi</h2>
+    
+    <div class="info-box">
+        <i class="bi bi-info-circle"></i> ID Transaksi: <strong>#{{ data.id_transaksi_rino }}</strong>
+    </div>
+
+        <form method="POST">
+    <!-- Pasien -->
+    <div class="form-group">
+        <label class="form-label"><i class="bi bi-person-check"></i> Pasien</label>
+        <select name="pasien" class="form-select" required>
+            {% for p in pasien %}
+                <option value="{{ p.id_pasien_rino }}" {% if p.id_pasien_rino == data.id_pasien_rino %}selected{% endif %}>
+                    {{ p.nama_rino }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Rawat Inap -->
+    <div class="form-group">
+        <label class="form-label"><i class="bi bi-hospital"></i> Rawat Inap</label>
+        <select name="rawat_inap" class="form-select" required>
+            {% for r in rawat_inap %}
+                {% if r.status_kamar_rino == "Kosong" or r.id_rawat_rino == data.id_rawat_rino %}
+                    <option value="{{ r.id_rawat_rino }}" {% if r.id_rawat_rino == data.id_rawat_rino %}selected{% endif %}>
+                        Kamar {{ r.id_kamar_rino }} ({{ r.kelas_rino }})
+                    </option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Tanggal Masuk & Keluar -->
+    <div class="form-group">
+        <label class="form-label"><i class="bi bi-calendar-check"></i> Tanggal Masuk</label>
+        <input type="date" name="tgl_masuk" class="form-control" value="{{ data.tgl_masuk_rino }}" required>
+    </div>
+    <div class="form-group">
+        <label class="form-label"><i class="bi bi-calendar-x"></i> Tanggal Keluar</label>
+        <input type="date" name="tgl_keluar" class="form-control" value="{{ data.tgl_keluar_rino }}" required>
+    </div>
+
+    <!-- Status Kamar (info only) -->
+    <div class="info-box">
+        <i class="bi bi-door-closed"></i> Status Kamar: <strong>{{ data.status_kamar }}</strong>
+    </div>
+
+    <!-- Total Biaya -->
+    <div class="form-group">
+        <label class="form-label"><i class="bi bi-cash-coin"></i> Total Biaya (Rp)</label>
+        <input type="number" name="total" class="form-control" value="{{ data.total_biaya_rino }}" readonly>
+    </div>
+
+    <!-- Status Pembayaran -->
+    <div class="form-group">
+        <label class="form-label"><i class="bi bi-credit-card"></i> Status Pembayaran</label>
+        <select name="status" class="form-select" required>
+            <option value="Belum Bayar" {% if data.status_pembayaran_rino == 'Belum Bayar' %}selected{% endif %}>Belum Bayar</option>
+            <option value="Lunas" {% if data.status_pembayaran_rino == 'Lunas' %}selected{% endif %}>Lunas</option>
+        </select>
+    </div>
+
+        <div class="form-divider"></div>
+
+        <div class="btn-container">
+            <button type="submit" class="btn-submit">
+                <i class="bi bi-check-circle"></i> Update
+            </button>
+            <a href="/" class="btn-back">
+                <i class="bi bi-arrow-left"></i> Kembali
+            </a>
+            <a href="/hapus/{{ data.id_transaksi_rino }}" class="btn-delete" onclick="return confirm('Yakin hapus data ini?')">
+                <i class="bi bi-trash"></i> Hapus
+            </a>
+        </div>
+    </form>
+</div>
+</body>
+</html>
